@@ -1,6 +1,6 @@
 
 /** 
- * PingPong
+ *  * PingPong
  *
  * @version	1.0
  * @author	Tanwani Anyangwe
@@ -169,9 +169,7 @@ public class PingPongSound extends Applet
 						ballX = getXPos(ballX);
 						ballY = getYPos(ballY);
 					}
-					
-                    repaint();		// force a repaint now
-
+					repaint();		// force a repaint now
                     try {
                             Thread.sleep(30); // pause .03 secs
                     }
@@ -206,7 +204,6 @@ public class PingPongSound extends Applet
 			if(started){
 				g.setColor(Color.yellow);
 				g.fillOval(ballX,ballY,10,10); //paint the dot
-
 				g.setColor(Color.red);
 				g.fillRect(300,batYP,5,30); // paint the player's bat
 				g.setColor(Color.blue);
@@ -300,14 +297,12 @@ public class PingPongSound extends Applet
 	public void mouseDragged(MouseEvent e) {
 		
 	}
-	
 	//move player's bat
 	public void mouseMoved(MouseEvent e) {
 		int y = e.getY();
 		if ( (y - batYP) > 0 ) MoveDown(y);
 		else MoveUp(y);
-	}
-	
+	}	
 	public void mouseEntered(MouseEvent event) {
     }
     public void mouseExited(MouseEvent event) {
