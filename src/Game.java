@@ -41,6 +41,12 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int batx2 = x2;
     int baty3 = y3-lengthbat;
     int batx4 = x4-lengthbat; 
+    int baty1min = y1;
+    int batx2min = x2;
+    int baty3min = y3-lengthbat;
+    int batx4min = x4-lengthbat; 
+
+
     int ballincr = 2;
    
     // public void init(){  
@@ -137,11 +143,61 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         while (true) {
-           game.moveBall();
+        	//game.todo();
+            game.moveBall();
             game.repaint();
             Thread.sleep(10);
         }
     }
+    public void todo(){
+    	
+    	if (ballx<160){
+			if (upwards){
+				if ( bally > batMin) batYC = ballY ;
+				else batYC = batMin;
+			}
+			else {
+				if ( ballY < batMax) batYC = ballY - 5;// (int)(Math.random()*5);
+				else batYC = batMax;
+			}
+		}
+		/*
+		//Strike ball if in contact with bat
+		if(ballX > 289 && ballX < 294 ) {
+			// if the ball hits the player's bat change the direction.
+			if( ((ballY + 5) > batYP) && ((batYP + 31) > ballY) ) {
+				toLeft = true;
+				showStatus("Player hits");
+				hitSound.play(); 
+			}
+		}					
+		if( ballX > 16 && ballX < 21 ) {
+			// if the ball hits the computer's bat change the direction.
+			if( ((ballY + 5) > batYC) && ((batYC + 31) > ballY) ) {
+				toLeft = false;
+				showStatus("Computer hits");							
+				hitSound.play(); 
+			}
+		}
+		
+		//end game if top score is attained
+		if (scoreC==topscore || scoreP==topscore)endGame();
+		
+		if (started){
+			ballX = getXPos(ballX);
+			ballY = getYPos(ballY);
+		}
+		
+    	
+    	
+    	
+    	
+    	
+
+    	*/
+    	
+    }
+    
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
