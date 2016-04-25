@@ -14,7 +14,8 @@ import javax.swing.JPanel;
 public class Game extends JPanel implements  MouseListener, MouseMotionListener  {
     int ballx = 100;
     int bally = 0;
-    int radii = 10;
+    int dia = 10;
+
     int lengthbat = 50;
     int widthbat  =10;
     static int dimenx = 500;
@@ -34,8 +35,8 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int y4 = y1;
     int ballxmin = x1;
     int ballymin = y1;
-    int ballxmax = x3-radii;
-    int ballymax = y3-radii;
+    int ballxmax = x3-dia;
+    int ballymax = y3-dia;
     int score1 , score2,score3,score4 = 0;
     //these will the dynamic variable of the game 
     int baty1 = y1;
@@ -46,8 +47,9 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int batxmin = x1;
     int batymax = y3-lengthbat;
     int batxmax = x4-lengthbat; 
-    int ballincr = 2;
-   
+    int ballincrx = 2;
+    int ballincry = 2;
+    
     // public void init(){  
     	//addMouseMotionListener(this);
 		//addMouseListener(this);
@@ -64,7 +66,9 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     	
     }
 	protected int ballxpos(int x) {
-		if(ballx > ballxmax) {				
+		if(x > ballxmax) {	
+			//if the player miss then it change the direction and count score 
+			// exactly when it past the mark of maximum limit
 			if(isstarted && !toLeft) {
 				score3 += 1;
 				//showStatus("Player missed");
@@ -73,6 +77,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 			toLeft = true;
 			return ballxmax;
 		}
+		//same as above for computer player
 		if(x < ballxmin ) {				
 			if(isstarted && toLeft){
 				score1 += 1;		
@@ -85,28 +90,37 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 			return ballxmin;
 		}
 		
-		if(toLeft) return ballx - ballincr;
-		else return ballx + ballincr;
+		if(toLeft) return ballx - ballincrx;
+		else return ballx + ballincrx;
 	}
-
+	
 	//Move ball in Y-direction
 	protected int ballypos(int y) {
-		if( y > ballymax) {
-
-			System.out.println("in ball ypos");
+		//--------------//
+		if(y > ballymax) {				
+			if(isstarted && !upwards) {
+				score2 += 1;
+				//showStatus("Player missed");
+				//hitSound.play(); 
+			}
 			upwards = true;
-			//hitSound.play(); 
 			return ballymax;
 		}
-		if(y < ballymin) {
+		if(y < ballymin ) {				
+			if(isstarted && upwards){
+				score4 += 1;		
+				//showStatus("Computer missed");
+				//hitSound.play(); 
+			}
 
-			System.out.println("in ball ypos");
+			System.out.println("in ball xpos");
 			upwards = false;
-		//	hitSound.play();
 			return ballymin;
 		}
-		if(upwards) return bally - ballincr;
-		else return bally + ballincr;
+
+		//-------------//
+		if(upwards) return bally - ballincry;
+		else return bally + ballincry;
 	}
 
     
@@ -118,7 +132,11 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.fillOval(ballx, bally, radii, radii);
+        // format -- > (outer point of x co-ordinate,outer point of y-co-ordinate,radius x, radius y)
+        //dia is atgually dia here so dia/2 = diaactual
+        g2d.fillOval(ballx, bally, dia, dia);
+        g2d.drawLine(0, 0, 10, 10);
+        g2d.fillOval(0, 0, 10, 10);
         g2d.setColor(Color.BLUE);
         //(Starting x , starting y , dimension x , dimension y)
         g2d.fillRect(x1,baty1,widthbat,lengthbat); // paint the player1's bat
@@ -157,6 +175,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     public void todo(){
     	//adding aliveness to computer code
     	// and depending on the difficult y the random function will be modified
+    	// for playyer 1
     	if (ballx<(x1+x3)/2){
 			if (upwards){
 				if ( bally > batymin) baty1 = bally ;
@@ -167,11 +186,35 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 				else baty1 = batymax;
 			}
 		}
-		
+    	//for player 4
+    	if (ballx<(x1+x3)/2){
+			if (toLeft){
+				if ( ballx > batxmin) batx4 = ballx ;
+				else batx4 = batxmin;
+			}
+			else {
+				if ( ballx < batxmax) batx4 = ballx - 5;// (int)(Math.random()*5);
+				else batx4 = batxmax;
+			}
+		}
+    	// player 3 would be person
+    	//for player 2
+    	if (ballx >(x1+x3)/2){
+			if (toLeft){
+				if ( ballx > batxmin) batx2 = ballx ;
+				else batx4 = batxmin;
+			}
+			else {
+				if ( ballx < batxmax) batx2 = ballx - 5;// (int)(Math.random()*5);
+				else batx4 = batxmax;
+			}
+		}
+    	
+    	
 		//Strike ball if in contact with bat
-		if(ballx> (x3-widthbat) && ballx < x3 ) {
+		if( ballx + dia > (x3-widthbat) && ballx < x3 ) {
 			// if the ball hits the player's bat change the direction.
-			if( ((bally + radii/2) > baty3) && ((baty3 + lengthbat) > bally) ) {
+			if( ((bally + dia) > baty3) && ((baty3 + lengthbat) > bally) ) {
 				toLeft = true;
 				System.out.println("from to do");
 				
@@ -179,9 +222,9 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 				//hitSound.play(); 
 			}
 		}					
-		if( ballx > 16 && ballx < 21 ) {
+		if( ballx > 16 && ballx < x1 + widthbat ) {
 			// if the ball hits the computer's bat change the direction.
-			if( ((bally + radii/2) > baty1) && ((baty1 + lengthbat) > bally) ) {
+			if( ((bally + dia/2) > baty1) && ((baty1 + lengthbat) > bally) ) {
 				toLeft = false;
 
 				System.out.println("from to do");
