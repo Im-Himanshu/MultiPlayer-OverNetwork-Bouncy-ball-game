@@ -85,7 +85,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 				//hitSound.play(); 
 			}
 
-			System.out.println("in ball xpos");
+		//	System.out.println("in ball xpos");
 			toLeft = false;
 			return ballxmin;
 		}
@@ -97,6 +97,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 	//Move ball in Y-direction
 	protected int ballypos(int y) {
 		//--------------//
+		// score counter for player 2
 		if(y > ballymax) {				
 			if(isstarted && !upwards) {
 				score2 += 1;
@@ -106,6 +107,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 			upwards = true;
 			return ballymax;
 		}
+		//score counter for player 4
 		if(y < ballymin ) {				
 			if(isstarted && upwards){
 				score4 += 1;		
@@ -113,7 +115,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 				//hitSound.play(); 
 			}
 
-			System.out.println("in ball xpos");
+		//	System.out.println("in ball xpos");
 			upwards = false;
 			return ballymin;
 		}
@@ -211,27 +213,54 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 		}
     	
     	
-		//Strike ball if in contact with bat
-		if( ballx + dia > (x3-widthbat) && ballx < x3 ) {
+		//BOunce back ball if in contact with bat
+		//player 3 manual 
+    	if( ballx + dia > (x3-widthbat) && ballx < x3 ) {
 			// if the ball hits the player's bat change the direction.
 			if( ((bally + dia) > baty3) && ((baty3 + lengthbat) > bally) ) {
 				toLeft = true;
-				System.out.println("from to do");
+				//System.out.println("from to do");
+				
+				//showStatus("Player hits");
+				//hitSound.play(); 
+			}
+		}				
+    	// player 1 computer
+		if( ballx > 16 && ballx < x1 + widthbat ) {
+			// if the ball hits the computer's bat change the direction.
+			if( ((bally + dia) > baty1) && ((baty1 + lengthbat) > bally) ) {
+				toLeft = false;
+
+				//System.out.println("from to do");
+				//showStatus("Computer hits");							
+				//hitSound.play(); 
+			}
+		}
+		// player 2 computer
+		if( bally+dia  > (y3-widthbat) && bally < y3 ) {
+			// if the ball hits the player's bat change the direction.
+			if( ((ballx + dia) > batx2) && ((batx2 + lengthbat) > ballx) ) {
+				upwards = true;
+				System.out.println("from to do i wanted");
 				
 				//showStatus("Player hits");
 				//hitSound.play(); 
 			}
 		}					
-		if( ballx > 16 && ballx < x1 + widthbat ) {
+		// player 4
+		if( bally > 16 && bally < y1 + widthbat ) {
 			// if the ball hits the computer's bat change the direction.
-			if( ((bally + dia/2) > baty1) && ((baty1 + lengthbat) > bally) ) {
-				toLeft = false;
+			if( ((ballx + dia) > batx4) && ((batx4 + lengthbat) > ballx) ) {
+				upwards = false;
 
-				System.out.println("from to do");
+				//System.out.println("from to do");
 				//showStatus("Computer hits");							
 				//hitSound.play(); 
 			}
 		}
+		
+		
+		
 		
 		//end game if top score is attained
 		if (score1==topscore || score3==topscore) endGame();
@@ -277,17 +306,17 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(10);
+		//System.out.println(10);
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(10);
+	//	System.out.println(10);
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(10);
+	//	System.out.println(10);
 	}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
