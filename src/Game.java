@@ -15,12 +15,22 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int ballx = 100;
     int bally = 0;
     int dia = 10;
-
+    int omega = 0;
+    int ballvx = 0;
+    int ballvy = 0;
     int lengthbat = 50;
     int widthbat  =10;
     static int dimenx = 500;
     static int dimeny = 500;
     int topscore = 3;
+    // these variable are to store the postion of bat to predict the velocity of cursor
+  
+    int p1 = 0;
+	int p2 = 0;
+	int p3 = 0 ;
+	int p4 = 0;
+//	int p5 = 0;
+	int vbat = 0;
     
     //nomenclature anti-clockwise
     //starting point x1 and y1
@@ -43,10 +53,17 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int batx2 = x2;
     int baty3 = y3-lengthbat;
     int batx4 = x4-lengthbat; 
+    int batspeed1 = 0;
+    int batspeed2 = 0;
+    int batsspeed3 = 0;
+    int batspeed4 = 0;
     int batymin = y1;
     int batxmin = x1;
     int batymax = y3-lengthbat;
-    int batxmax = x4-lengthbat; 
+    int batxmax = x4-lengthbat;
+    // these two variable are like velocity because it is distance change afte revery frame
+    // if the frame chnage is assumed to be in constant time 
+    // we will update these two fro speed change
     int ballincrx = 2;
     int ballincry = 2;
     
@@ -54,17 +71,156 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     	//addMouseMotionListener(this);
 		//addMouseListener(this);
     //}
+    
+    // this function  is error creator based on input
+    // that is the level if 1 - easy , if 2- medium , if 3 - hard
+    // hard means computer will do least errors due to close
+    public int error(int type){
+    	
+    	
+    	return 2;
+    }
     private void moveBall() {
         ballx = ballxpos(ballx);
         bally = ballypos(bally);
     }
-    private void movebat(){
+    
+    private void  speedxchanger(int velbat){
+    	// tthe below K is just a factor to decide the effect of speed
+    	double k = .0584;
+    	int ko = 1;
+    	System.out.println("omega before collsion is    "+omega);
+    	//this omega could be negative
+    	omega =  omega + (velbat/dia)*ko ;
+    	System.out.println("omega after collision is    "+omega);
+    	ballincrx = ballincrx + (int)(2*ballincry*omega*k); 
+    	if (ballincrx <0){ toLeft = !toLeft; 
+    	ballincrx = ballincrx*(-1);
+    	System.out.println("ball in crement before collsion is    "+ ballincrx);
     	
-    	
-    	
-    	
-    	
+    	}
+    
+    
     }
+    private void  speedychanger(int velbat){
+    	// tthe below K is just a factor to decide the effect of speed
+    	double k = .05;
+    	int ko = 1;
+    	System.out.println("omega before collsion is y   "+omega);
+    	//this omega could be negative
+    	omega =  omega + (velbat/dia)*ko ;
+    	System.out.println("omega after collision is  y    "+omega);
+    	ballincry = ballincry + (int)(2*ballincrx*omega*k); 
+    	System.out.println("ball in crement in y is before collsion is    "+ ballincry);
+    	if (ballincry <0){ upwards = !upwards; 
+    	ballincry = ballincry*(-1);
+    	System.out.println("ball in crement in y is before collsion is    "+ ballincry);
+    	
+    	}
+    
+    }
+    
+    
+    public void todo(){
+    	 
+    	//adding aliveness to computer code
+    	// and depending on the difficult y the random function will be modified
+    	//<-------------------------------------------->
+    	// for playyer 1
+    	if (ballx<(x1+x3)/2){
+			if (upwards){
+				if ( bally > batymin) baty1 = bally ;
+				else baty1 = batymin;
+			}
+			else {
+				if ( bally < batymax) baty1 = bally - 5;// (int)(Math.random()*5);
+				else baty1 = batymax;
+			}
+		}
+    	//for player 2
+    	if (bally >(y1+y3)/2){
+			if (toLeft){
+				if ( ballx > batxmin) batx2 = ballx ;
+				else batx4 = batxmin;
+			}
+			else {
+				if ( ballx < batxmax) batx2 = ballx - 5;// (int)(Math.random()*5);
+				else batx4 = batxmax;
+			}
+		}
+    	//for player 4
+    	if (ballx<(x1+x3)/2){
+			if (toLeft){
+				if ( ballx > batxmin) batx4 = ballx ;
+				else batx4 = batxmin;
+			}
+			else {
+				if ( ballx < batxmax) batx4 = ballx - 5;// (int)(Math.random()*5);
+				else batx4 = batxmax;
+			}
+		}
+    	// player 3 would be person
+    	
+    	//<--------------------------------------------------->
+    	
+		//BOunce back ball if in contact with bat and change the speed as well
+    	// by changing the ballxincr and y
+		//player 3 manual 
+    	if( ballx + dia > (x3-widthbat) && ballx < x3 ) {
+			// if the ball hits the player's bat change the direction.
+			if( ((bally + dia) > baty3) && ((baty3 + lengthbat) > bally) ) {
+	
+				speedychanger(vbat);
+				toLeft = true;
+				//showStatus("Player hits");
+				//hitSound.play(); 
+			}
+		}				
+    	// player 1 computer
+		if( ballx > 16 && ballx < x1 + widthbat ) {
+			// if the ball hits the computer's bat change the direction.
+			if( ((bally + dia) > baty1) && ((baty1 + lengthbat) > bally) ) {
+				toLeft = false;
+
+				////System.out.println("from to do");
+				//showStatus("Computer hits");							
+				//hitSound.play(); 
+			}
+		}
+		// player 2 computer
+		if( bally+dia  > (y3-widthbat) && bally < y3 ) {
+			// if the ball hits the player's bat change the direction.
+			if( ((ballx + dia) > batx2) && ((batx2 + lengthbat) > ballx) ) {
+				upwards = true;
+				//System.out.println("from to do i wanted");
+				
+				//showStatus("Player hits");
+				//hitSound.play(); 
+			}
+		}					
+		// player 4
+		if( bally > 16 && bally < y1 + widthbat ) {
+			// if the ball hits the computer's bat change the direction.
+			if( ((ballx + dia) > batx4) && ((batx4 + lengthbat) > ballx) ) {
+				upwards = false;
+
+				//System.out.println("from to do");
+				//showStatus("Computer hits");							
+				//hitSound.play(); 
+			}
+		}
+		
+		//end game if top score is attained
+		if (score1==topscore || score3==topscore) endGame();
+		
+		if (isstarted){
+			ballx = ballxpos(ballx);
+			ballx = ballypos(ballx);
+		}
+
+    	   
+    }
+
 	protected int ballxpos(int x) {
 		if(x > ballxmax) {	
 			//if the player miss then it change the direction and count score 
@@ -125,8 +281,6 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 		else return bally + ballincry;
 	}
 
-    
-    
     @Override
     public void paint(Graphics g) {
  
@@ -174,105 +328,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
             Thread.sleep(10);
         }
     }
-    public void todo(){
-    	//adding aliveness to computer code
-    	// and depending on the difficult y the random function will be modified
-    	// for playyer 1
-    	if (ballx<(x1+x3)/2){
-			if (upwards){
-				if ( bally > batymin) baty1 = bally ;
-				else baty1 = batymin;
-			}
-			else {
-				if ( bally < batymax) baty1 = bally - 5;// (int)(Math.random()*5);
-				else baty1 = batymax;
-			}
-		}
-    	//for player 4
-    	if (ballx<(x1+x3)/2){
-			if (toLeft){
-				if ( ballx > batxmin) batx4 = ballx ;
-				else batx4 = batxmin;
-			}
-			else {
-				if ( ballx < batxmax) batx4 = ballx - 5;// (int)(Math.random()*5);
-				else batx4 = batxmax;
-			}
-		}
-    	// player 3 would be person
-    	//for player 2
-    	if (ballx >(x1+x3)/2){
-			if (toLeft){
-				if ( ballx > batxmin) batx2 = ballx ;
-				else batx4 = batxmin;
-			}
-			else {
-				if ( ballx < batxmax) batx2 = ballx - 5;// (int)(Math.random()*5);
-				else batx4 = batxmax;
-			}
-		}
-    	
-    	
-		//BOunce back ball if in contact with bat
-		//player 3 manual 
-    	if( ballx + dia > (x3-widthbat) && ballx < x3 ) {
-			// if the ball hits the player's bat change the direction.
-			if( ((bally + dia) > baty3) && ((baty3 + lengthbat) > bally) ) {
-				toLeft = true;
-				//System.out.println("from to do");
-				
-				//showStatus("Player hits");
-				//hitSound.play(); 
-			}
-		}				
-    	// player 1 computer
-		if( ballx > 16 && ballx < x1 + widthbat ) {
-			// if the ball hits the computer's bat change the direction.
-			if( ((bally + dia) > baty1) && ((baty1 + lengthbat) > bally) ) {
-				toLeft = false;
-
-				//System.out.println("from to do");
-				//showStatus("Computer hits");							
-				//hitSound.play(); 
-			}
-		}
-		// player 2 computer
-		if( bally+dia  > (y3-widthbat) && bally < y3 ) {
-			// if the ball hits the player's bat change the direction.
-			if( ((ballx + dia) > batx2) && ((batx2 + lengthbat) > ballx) ) {
-				upwards = true;
-				System.out.println("from to do i wanted");
-				
-				//showStatus("Player hits");
-				//hitSound.play(); 
-			}
-		}					
-		// player 4
-		if( bally > 16 && bally < y1 + widthbat ) {
-			// if the ball hits the computer's bat change the direction.
-			if( ((ballx + dia) > batx4) && ((batx4 + lengthbat) > ballx) ) {
-				upwards = false;
-
-				//System.out.println("from to do");
-				//showStatus("Computer hits");							
-				//hitSound.play(); 
-			}
-		}
-		
-		
-		
-		
-		//end game if top score is attained
-		if (score1==topscore || score3==topscore) endGame();
-		
-		if (isstarted){
-			ballx = ballxpos(ballx);
-			ballx = ballypos(ballx);
-		}
-
-    	
-    }
-    public void endGame(){
+       public void endGame(){
     	
     	
     	
@@ -283,22 +339,31 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
 		// TODO Auto-generated method stub
 	//	System.out.println(10);		
 	}
+		
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		//System.out.println();
+	
 		
 		int y = e.getY();
-		//System.out.println(y);
+		p1 = y;
+		// velocity is postion change in 3 frames times
+		 vbat = p1-p4;
+		 p4= p3;
+		 p3 = p2;
+		p2 = p1;
+//		System.out.println(vbat);
 		if ( (y - baty3) > 0 ) MoveDown(y);
 		else MoveUp(y);
 	}
 	protected void MoveUp(int y){		
 		if ( y > ballymin) baty3 = y;
 		else baty3 = ballymin;
-	}
+	} 
 	//move player's bat down	
 	protected void MoveDown(int y){			
+		
 		if ( y < (ballymax-lengthbat)) baty3 = y;
 		else baty3 = ballymax-lengthbat;
 	}
