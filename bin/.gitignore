@@ -1,10 +1,6 @@
-/Game.class
-/PingPongSound.class
+/GreetingServer.class
+/server.class
 /client$1.class
 /client$Square.class
-/client.class
-/server.class
-/tic$Player.class
-/tic.class
-/tic_tac$Player.class
-/tic_tac.class
+/Game1$Player.class
+/Game1.class

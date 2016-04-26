@@ -20,7 +20,7 @@ import java.net.Socket;
  *  MOVE <n>  (0 <= n <= 8)    WELCOME <char>  (char in {X, O})
  *  QUIT                       VALID_MOVE
  *                             OTHER_PLAYER_MOVED <n>
- *                             VICTORY
+ *                             VICTORY 
  *                             DEFEAT
  *                             TIE
  *                             MESSAGE <text>
@@ -34,13 +34,13 @@ public class server {
      * Runs the application. Pairs up clients that connect.
      */
     public static void main(String[] args) throws Exception {
-        ServerSocket listener = new ServerSocket(8901);
+        ServerSocket listener = new ServerSocket(6009);
         System.out.println("Tic Tac Toe Server is Running");
         try {
             while (true) {
-            	tic_tac game = new tic_tac();
-            	tic_tac.Player playerX = game.new Player(listener.accept(), 'X');
-            	tic_tac.Player playerO = game.new Player(listener.accept(), 'O');
+                Game1 game = new Game1();
+                Game1.Player playerX = game.new Player(listener.accept(), 'X');
+                Game1.Player playerO = game.new Player(listener.accept(), 'O');
                 playerX.setOpponent(playerO);
                 playerO.setOpponent(playerX);
                 game.currentPlayer = playerX;
@@ -56,7 +56,7 @@ public class server {
 /**
  * A two-player game.
  */
-class tic_tac {
+class Game1 {
 
     /**
      * A board has nine squares.  Each square is either unowned or

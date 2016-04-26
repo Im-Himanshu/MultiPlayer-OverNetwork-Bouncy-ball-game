@@ -42,7 +42,7 @@ public class client {
     private Square[] board = new Square[9];
     private Square currentSquare;
 
-    private static int PORT = 8901;
+    private static int PORT = 6009;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
