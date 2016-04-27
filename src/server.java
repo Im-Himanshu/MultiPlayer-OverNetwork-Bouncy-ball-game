@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
 
+import javax.swing.JFrame;
+
+
 /*
  * A chat server that delivers public and private messages.
  */
@@ -15,7 +18,7 @@ public class server {
   private static Socket clientSocket = null;
 
   // This chat server can accept up to maxClientsCount clients' connections.
-  private static final int maxClientsCount = 4;
+  private static final int maxClientsCount = 1;
   private static final clientThread[] threads = new clientThread[maxClientsCount];
 
   public static void main(String args[]) {
@@ -43,7 +46,12 @@ public class server {
      * Create a client socket for each connection and pass it to a new client
      * thread.
      */
+    
+   
+    
+    
     while (true) {
+    	
       try {
         clientSocket = serverSocket.accept();
         int i = 0;
@@ -63,6 +71,9 @@ public class server {
         System.out.println(e);
       }
     }
+    
+    
+    
   }
 }
 
@@ -84,16 +95,54 @@ class clientThread extends Thread {
   private final clientThread[] threads;
   private int maxClientsCount;
 
+  
+  
+  
   public clientThread(Socket clientSocket, clientThread[] threads) {
     this.clientSocket = clientSocket;
     this.threads = threads;
     maxClientsCount = threads.length;
   }
 
+  public Game startGame () throws InterruptedException{
+	  JFrame frame = new JFrame("Ping pong Game");
+      Game game = new Game();
+  	game.addMouseMotionListener(game);
+		game.addMouseListener(game);
+		game.levelsetter(3);// 3-- being the easy
+      
+		frame.add(game);
+      frame.setSize(500+50,500+50);
+      frame.setVisible(true);
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      return game;
+  }
+  public void runGame(Game game){
+      while (true) {
+        	game.isstarted= true;
+        	game.todo();
+            game.moveBall();
+            game.repaint();
+            //time being dependent on the level the speed of the ball varies
+            game.index++;
+            if(game.index>100){game.index = 0;}
+
+            //Thread.sleep(game.time);
+        }
+  }
+  
   public void run() {
     int maxClientsCount = this.maxClientsCount;
     clientThread[] threads = this.threads;
-
+/*
+    Game game = null;
+    try {
+		game = startGame();
+	} catch (InterruptedException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+  */  
     try {
       /*
        * Create input and output streams for this client.
@@ -109,6 +158,7 @@ class clientThread extends Thread {
         } else {
           os.println("The name should not contain '@' character.");
         }
+    //    runGame(game);
       }
 
       /* Welcome the new the client. */

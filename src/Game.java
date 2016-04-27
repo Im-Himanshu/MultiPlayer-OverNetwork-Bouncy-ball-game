@@ -17,13 +17,12 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public class Game extends JPanel implements  MouseListener, MouseMotionListener  {
 // all the variables
-	
 	int index = 0; 
 	int sigma  =1;  // 
-	int ballx = 400; // x,y co-ordinate of ball tobe used in paint 
+	int ballx = 400; // x,y coordinate of ball to be used in paint 
     int bally = 0;
     int dia = 20;   // dia of ball 
-    int omega = 0;  // rotational velocity of ball 
+    int omega = 0;  // rotational velocity of ball
     int ballvx = 0; // ball vel. in x,y direction
     int ballvy = 0;
     int lengthbat = 50; // length and width of bat for player
@@ -35,7 +34,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int vlimit = 5;  	//upper limit of ball velocity in one direction
     int vlimitl = 2;    // lower limit of ball vel
     int velcsigma = 20;// this is define the velocity of the bat of computer
-    // these variable store the movement of curosr to CAL. THE VELocity of bat
+    // these variable store the movement of cursor to CAL. THE VELocity of bat
     int p1 []  = new int [4];
     int p2 []  = new int [4];
     int p3 []  = new int [4];
@@ -54,10 +53,10 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int time ; // how much time to delay the frame so that fame per second can be controlled and also used in judging level
     //nomenclature anti-clockwise
     //starting point x1 and y1
-    // for juding the direction of ball
+    // for judging the direction of ball
 	boolean upwards,toLeft, isstarted, isgameruning , ishit;
     
-	// cordinate of edges of board
+	// coordinate of edges of board
 	static int x1 = 10;
     static int y1 = 70;
     int x2 = x1;
@@ -84,9 +83,9 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     int batymax = y3-lengthbat;
     int batxmax = x4-lengthbat;
     // these two variable are like velocity because it is distance change afte revery frame
-    // if the frame chnage is assumed to be in constant time 
-    // we will update these two fro speed change
-    // how much ball cordinate increase after every frame
+    // if the frame change is assumed to be in constant time 
+    // we will update these two from speed change
+    // how much ball coordinate increase after every frame
     int ballincrx = 2;
     int ballincry = 2;
     
@@ -129,7 +128,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener 
     	}
     	
     }
-    private void moveBall() {
+    public void moveBall() {
         ballx = ballxpos(ballx);
         bally = ballypos(bally);
     }
