@@ -103,33 +103,6 @@ class clientThread extends Thread {
     this.threads = threads;
     maxClientsCount = threads.length;
   }
-
-  public Game startGame () throws InterruptedException{
-	  JFrame frame = new JFrame("Ping pong Game");
-      Game game = new Game();
-  	game.addMouseMotionListener(game);
-		game.addMouseListener(game);
-		game.levelsetter(3);// 3-- being the easy
-      
-		frame.add(game);
-      frame.setSize(500+50,500+50);
-      frame.setVisible(true);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      return game;
-  }
-  public void runGame(Game game){
-      while (true) {
-        	game.isstarted= true;
-        	game.todo();
-            game.moveBall();
-            game.repaint();
-            //time being dependent on the level the speed of the ball varies
-            game.index++;
-            if(game.index>100){game.index = 0;}
-
-            //Thread.sleep(game.time);
-        }
-  }
   
   public void run() {
     int maxClientsCount = this.maxClientsCount;
