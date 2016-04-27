@@ -135,7 +135,7 @@ public class PingPongSound extends Applet
 					//Move computer's bat - allow margin for errors
 					if (ballX<160){
 						if (upwards){
-							if ( ballY > batMin) batYC = ballY + 5;
+							if ( ballY > batMin) batYC = ballY ;
 							else batYC = batMin;
 						}
 						else {
@@ -300,6 +300,7 @@ public class PingPongSound extends Applet
 	//move player's bat
 	public void mouseMoved(MouseEvent e) {
 		int y = e.getY();
+		System.out.println(y);
 		if ( (y - batYP) > 0 ) MoveDown(y);
 		else MoveUp(y);
 	}	
