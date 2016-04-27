@@ -23,12 +23,18 @@ public class server extends Thread
             System.out.println("Just connected to "
                   + server.getRemoteSocketAddress());
             DataInputStream in =
-                  new DataInputStream(server.getInputStream());
-            System.out.println(in.readUTF());
+                    new DataInputStream(server.getInputStream());
             DataOutputStream out =
-                 new DataOutputStream(server.getOutputStream());
-            out.writeUTF("Thank you for connecting to "
-              + server.getLocalSocketAddress() + "\nGoodbye!");
+                    new DataOutputStream(server.getOutputStream());
+               out.writeUTF("Thank you for connecting to "
+                 + server.getLocalSocketAddress() + "\nGoodbye!");
+            for(int i = 0;i<10;i++){
+	            String received = in.readUTF();
+	            if(received != null){
+		            System.out.println(received);
+		            out.writeUTF("received packet" + (received));
+	            }
+            }
             server.close();
          }catch(SocketTimeoutException s)
          {

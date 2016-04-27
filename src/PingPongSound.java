@@ -71,7 +71,7 @@ public class PingPongSound extends Applet
 			gameover = false;
 			//Player and computer's scores
 			scoreP = 0; 
-			scoreC = 0;
+			scoreC = 0;	
 			
 			if (startPlayer==0) {
 				ballX = 300;
