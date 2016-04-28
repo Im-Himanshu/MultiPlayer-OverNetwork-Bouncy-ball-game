@@ -1,18 +1,21 @@
 package bouncyballgame;
 
-import java.util.Random;
 
 public class demo {
 	
 	public static void main (String ...a){
+		String s = "2,3,4";
+		String ary []= s.split(",");
+  	  int number  = Integer.valueOf(ary[1]).intValue();
+  	 System.out.println(number);	
+
 		
+		/*int count = 0;
+		 * 	
 		Random r = new Random();
 		
 		double i = r.nextGaussian()*2+ 2 ;
 		System.out.println(i);
-
-		
-		/*int count = 0;
 
 		int sum = 0;
 		while(count < 50){

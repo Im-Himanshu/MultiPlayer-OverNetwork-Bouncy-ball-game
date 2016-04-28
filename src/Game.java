@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class Game extends JPanel implements  MouseListener, MouseMotionListener,ActionListener  {
 // all the variables
+	static Game gameobject;
 	int crntplyr =3;
 	int level = 1;
 	int index = 0; 
@@ -35,15 +36,17 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     int vlimit = 5;  	//upper limit of ball velocity in one direction
     int vlimitl = 2;    // lower limit of ball vel
     int velcsigma = 20;// this is define the velocity of the bat of computer
+   // this will be 0 if that index of client is not there and 1 if there 
+    int openspot[] = new int[5];
 
 
     // these variable store the movement of curosr to CAL. THE VELocity of bat
-    int p1 []  = new int [4];
+    int p1 []  = new int [5];
 
-    int p2 []  = new int [4];
-    int p3 []  = new int [4];
-    int p4 []  = new int [4];
-    // these all will be the velocity of each bat i= player number
+    int p2 []  = new int [5];
+    int p3 []  = new int [5];
+    int p4 []  = new int [6];
+    // these all will be the velocity of \each bat i= player number
     int vbat [] = new int[5];
     // chance variable are to moving bat after 8 frame so that variation on the screen could be minimize
     int chance1 =0;
@@ -70,6 +73,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     int ballymin = y1;  
     int ballxmax = x3-dia; // max ball can be draw
     int ballymax = y3-dia;
+    int score[] = new int [5];
     int score1 , score2,score3,score4 = 0; //score of each player
    
     //these will the dynamic variable of the game
@@ -108,10 +112,10 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     // that is the level if 1 - easy , if 2- medium , if 3 - hard
     // hard means computer will do least errors due to close
     public Game(int level){
+    	gameobject = this;
 	    JFrame frame = new JFrame("Ping pong Game");
 //        Game game = new Game();
-
-    	addMouseMotionListener(this);
+	    addMouseMotionListener(this);
 		addMouseListener(this);
 		levelsetter(level);// 3-- being the easy
 		frame.add(this);
@@ -119,11 +123,10 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.setSize(dimenx+x1+50,dimeny+y1+50);    
-    	while (true) {
+        frame.setSize(dimenx+x1+50,dimeny+y1+50);  
+        while (true) {
     		isstarted=true;
-        	todo();
-            moveBall();
+    		if(crntplyr == 3){todo();}
             repaint();
           
             //time being dependent on the level the speed of the ball varies
@@ -138,17 +141,11 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
 
     
     }
-        
-    public int error(){
-    	Random rand = new Random(); 	 
-    	
-    	int  x = (int )(rand.nextGaussian()*sigma);
-//    	if(x>lengthbat/2 || x < lengthbat*(-1)/2 ){ x = lengthbat/2+dia+1;}		
-		
-    	return x;
+    public int veldecider(){
+    	Random r = new Random();
+    	double i = r.nextGaussian()*velcsigma;
+    	return (int)i;    	
     }
-    // the below function set the accuracy level for the computer player
-    // if the level is hard than bat will fall in the range of lengthbat/2 
     public void levelsetter(int i){
     	// hard for player and good for computer
     	if(i == 1){ sigma =  lengthbat*3/4;
@@ -169,68 +166,109 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     	velcsigma = 20;
     	}
     	
+    }      
+    public int error(){
+    	Random rand = new Random(); 	 
+    	
+    	int  x = (int )(rand.nextGaussian()*sigma);
+//    	if(x>lengthbat/2 || x < lengthbat*(-1)/2 ){ x = lengthbat/2+dia+1;}		
+		
+    	return x;
     }
+    // the below function set the accuracy level for the computer player
+    // if the level is hard than bat will fall in the range of lengthbat/2 
+  
     private void moveBall() {
         ballx = ballxpos(ballx);
         bally = ballypos(bally);
     }
     // this function is to randomly decide the velocity of the computerbat
-    public int veldecider(){
-    	Random r = new Random();
-    	double i = r.nextGaussian()*velcsigma;
-    	return (int)i;    	
-    }
+    
     
         public void todo(){
        	//<-------------------------------------------->
     	
     	// calculate the computer response if any is active
     	if(crntplyr == 3)    computerplayer();
-    	processdata(); // set all the variable..
+    	//processdata(); // set all the variable..
     	// set the value of bring data;
     	//<--------------------------------------------------->
     	//repeller();// repel the coresponding ball
     	// the below function only at central server and this data is than send
     	if(crntplyr == 3) {repeller();}//repel the ball and set all the omega and vel data
-    	
-    	senddata();
+    	//senddata();
     	}
+        //call this function from client to send data
+        public String clientsend(){
+        	// usernumber,vbat,bat
+        	String response = "";
+        	response = response + crntplyr+","+vbat[crntplyr]+","+bat[crntplyr];    	
+        	return response;
+        }
+        //send data of server
+        public String serversend(){
+        	//toleft,upwards,ballx,bally,bat[1],bat[2],bat[3],bat[4],
+        	//socre[1],socre[2],socre[3],socre[4],omega
+        	String response = "";
+        	if(toLeft){response += "1,";}
+        	else{response += "0,";}
+        	if(upwards){response += "1,";}
+        	else{response += "0,";}
+        	response =response + ballx+","+bally+","+bat[1]+","+bat[2]+","+bat[3]+","+bat[4]+","+score[1]+","+score[2]+","+score[3]
+        			+","+score[4]+","+omega;
         
-        public void senddata(){
-        	
-        	// send all the data to all the server as 
-        	// toleft
-        	//upwards
-        	//ballx
-        	//bally
-        	//vbat[]
-        	//omega
-        	//bat[]
-        	
-        	// and if not central than 
-        	//vbat[crntplayer]//only specific vel.
-        	//bat[crntplayer] // only specific vel
-        	//crntplayer
+        	return response;
+        }
+        //this function would be called from the server class only 
+        public void serverprocessor(String s){
+        	// format would be 
+        	// usernumber,vbat,bat
+        	String ary []= s.split(",");
+        	  int number  = Integer.valueOf(ary[0]).intValue();
+        	  vbat[number] = Integer.valueOf(ary[1]).intValue();
+        	  bat[number] = Integer.valueOf(ary[2]).intValue();
+        	  }
+        //call this when a new client is connected to server
+        public void connectclient(String s){
+        	//playernumber
+        	  int number  = Integer.valueOf(s).intValue();
+        	  openspot[number] = 1;
+          	//means now computer will not be operating this
         	
         }
-    public void processdata(){
-    	 
-    	 /*if crntplayer ==3
-    	 int n = 1;
-    	 while(n<5){
-    	 // means nth index from nth data only
-    	 vbat[data.crntplayer] = data.vbat
-    	 bat[data.srntplayer] = data.bat
-    	 }
-    	 */
+        
+        public void clientprocessor(String s){
+    	// toleft (0,1)0 == false
+    	//upwards(0,1)
+    	//ballx
+    	//bally
+    	//vbat[]
+    	//omega
+    	//bat[]
+    	//score[]
+    	//toleft,upwards,ballx,bally,bat[1],bat[2],bat[3],bat[4],
+    	//socre[1],socre[2],socre[3],socre[4],omega
+    	String ary []= s.split(",");
+  	    int number  = Integer.valueOf(ary[0]).intValue();
+  	    if(number == 0){ toLeft = false;}
+  	    else {toLeft = true;}
+
+  	     number  = Integer.valueOf(ary[1]).intValue();
+  	    if(number == 0){ toLeft = false;}
+  	    else {toLeft = true;}
+
+ 	     ballx  = Integer.valueOf(ary[2]).intValue();
+  	     bally  = Integer.valueOf(ary[3]).intValue();
+  	     omega = Integer.valueOf(ary[12]).intValue();
     	int  i = 1;
     	 while(i<5){
-    		
     		 if(i != crntplyr){
     		// all particular player related data
     			 //bat[i] = from data
     			 //vbat[i] = 
-    		} 
+    			 bat[i] =  Integer.valueOf(ary[i+3]).intValue();
+    	  	     score[i] =  Integer.valueOf(ary[i+7]).intValue();
+    	} 
     		 i++;
     	 } 
     	 /*  toleft,upwards,ballx,bally,omega*/
@@ -240,7 +278,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     //this chance1 is delaying the frame change to 8 frame per change so that sharp fluctuation could be neglected
    	// for playyer 1
     	 
-    	 if (ballx<(x1+x3)/2 ){
+    	 if (ballx<(x1+x3)/2 && openspot[1]==0){
     		
 			if (upwards && chance1 == 0){
 				int x = error();
@@ -279,7 +317,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
 			}
    	}
    	//for player 2
-   	if ( bally > (y1+y3)/2){
+   	if ( bally > (y1+y3)/2 && openspot[2]==0){
 			if (toLeft && chance2 == 0){
 				int x = error();
 				if(x>lengthbat/2  ){ x = lengthbat/2+dia+1;}		
@@ -323,7 +361,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
    	
 		}
    	//for player 4
-   	if (bally<(y1+y3)/2){
+   	if (bally<(y1+y3)/2 && openspot[4] == 0){
 
 		if (toLeft && chance4 == 0){
 			int x = error();
@@ -428,7 +466,7 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
 		
 		
 		//end game if top score is attained
-if (score1==topscore || score3==topscore) endGame();
+if (score[1]==topscore || score[3]==topscore) endGame();
 		
 		if (isstarted){
 			ballx = ballxpos(ballx);
@@ -510,7 +548,7 @@ if (score1==topscore || score3==topscore) endGame();
 			//System.out.println("I was here in score3 and to left is  " + toLeft );
 			 
 			if(isstarted && !toLeft) {
-				score3 += 1;
+				score[3] += 1;
 				//showStatus("Player missed");
 				//hitSound.play(); 
 			//System.out.println("I was here in score3  " + score3 );
@@ -522,7 +560,7 @@ if (score1==topscore || score3==topscore) endGame();
 		//same as above for computer player
 		if(x < ballxmin) {				
 			if(isstarted && toLeft){
-				score1 += 1;
+				score[1] += 1;
 				//System.out.println("the score of 1 is  " + score1 + "direction up is " + upwards);
 					
 				//showStatus("Computer missed");
@@ -544,7 +582,7 @@ if (score1==topscore || score3==topscore) endGame();
 		// score counter for player 2
 		if(y > ballymax) {				
 			if(isstarted && !upwards) {
-				score2 += 1;
+				score[2] += 1;
 
 				//System.out.println("score 2 is " + score2 + "status of is left is " + toLeft);
 				//showStatus("Player missed");
@@ -556,7 +594,7 @@ if (score1==topscore || score3==topscore) endGame();
 		//score counter for player 4
 		if(y < ballymin ) {				
 			if(isstarted && upwards){
-				score4 += 1;		
+				score[4]+= 1;		
 				//System.out.println("score4 is " + score4);
 				//showStatus("Computer missed");
 				//hitSound.play(); 
@@ -577,7 +615,7 @@ if (score1==topscore || score3==topscore) endGame();
  
         super.paint(g2);
         //g = g2;
-        System.out.println("is started in paint is " + isstarted);
+       // System.out.println("is started in paint is " + isstarted);
         Graphics2D g2d = (Graphics2D) g2;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
@@ -646,15 +684,15 @@ if (score1==topscore || score3==topscore) endGame();
         g2d.drawString("Score card :-" ,15, 15);
         //(Starting x , starting y , dimension x , dimension y)
         g2d.fillRect(x1,bat[1],widthbat,lengthbat); // paint the player1's bat
-        g2d.drawString("PLAYER1 :- "+ score1 ,30, 30);
+        g2d.drawString("PLAYER1 :- "+ score[1] ,30, 30);
         g2d.setColor(Color.RED);
         g2d.fillRect(bat[2],y2-widthbat,lengthbat,widthbat); // paint the player2's bat
-        g2d.drawString("PLAYER2 :- "+ score2 ,120, 30);
+        g2d.drawString("PLAYER2 :- "+ score[2] ,120, 30);
         g2d.setColor(Color.GREEN);
-        g2d.drawString("PLAYER3 :- "+ score3 ,210, 30);
+        g2d.drawString("PLAYER3 :- "+ score[3] ,210, 30);
         g2d.fillRect(x3-widthbat,bat[3],widthbat,lengthbat); // paint the player3's bat
         g2d.setColor(Color.GRAY);
-        g2d.drawString("PLAYER4 :- "+ score4 ,290, 30);
+        g2d.drawString("PLAYER4 :- "+ score[4] ,290, 30);
         g2d.fillRect(bat[4],y4,lengthbat,widthbat); // paint the player4's bat
         g2d.setColor(Color.BLACK);
         int vel = (int)Math.pow(Math.pow(ballincrx, 2)+ Math.pow(ballincry, 2),.5);
@@ -682,27 +720,58 @@ if (score1==topscore || score3==topscore) endGame();
 		// TODO Auto-generated method stub
 		//System.out.println();
 	
-		
+		if(crntplyr == 1||crntplyr == 3){
 		int y  = e.getY();
 		p4[0] = y;
 		// velocity is postion change in 3 frames times
 		 vbat[crntplyr] = p4[0]-p4[3];
+		 p4[5] = p4[4];
+		 p4[4] = p4[3];
 		 p4[3] = p4[2];
 		 p4[2] = p4[1];
 		p4[1] = p4[0];
 //		System.out.println(vbat4);
 		if ( (y-bat[3]) > 0 ) MoveDown(p4[0]);
 		else MoveUp(p4[0]);
+		}
+		if(crntplyr == 2||crntplyr == 4){
+			int x  = e.getX();
+			p4[0] = x;
+			// velocity is postion change in 3 frames times
+			 vbat[crntplyr] = p4[0]-p4[5];
+			 p4[5] = p4[4];
+			 p4[4] = p4[3];
+			 p4[3] = p4[2];
+			 p4[2] = p4[1];
+			p4[1] = p4[0];
+//			System.out.println(vbat4);
+			if ( (x-bat[3]) > 0 ) Moveleft(p4[0]);
+			else Moveright(p4[0]);
+			}
+		}
+	protected void Moveleft(int x){		
+		if ( x > ballxmin) bat[crntplyr] = x;
+		else bat[crntplyr] = ballxmin;
+	
+
+	
 	}
+	protected void Moveright(int x){		
+
+		if ( x > ballxmin) bat[crntplyr] = x;
+		else bat[crntplyr] = ballymax-lengthbat;
+	
+	
+	}	
 	protected void MoveUp(int y){		
-		if ( y > ballymin) bat[3] = y;
-		else bat[3] = ballymin;
+		if ( y > ballymin) bat[crntplyr] = y;
+		else bat[crntplyr] = ballymin;
 	} 
 	//move player's bat down	
 	protected void MoveDown(int y){			
 		
-		if ( y > ballymin) bat[3] = y;
-		else bat[3] = ballymax-lengthbat;
+		if ( y < ballymax) bat[crntplyr] = y;
+		else bat[crntplyr] = ballymax-lengthbat;
 	}
 
 	@Override
@@ -764,7 +833,7 @@ if (score1==topscore || score3==topscore) endGame();
 	
 	
 	 public static void main(String[] args)  {
-		 Game game = new Game(2);		 
+//		 Game game = new Game(2);		 
 		 game.endGame();
 	 }		
 	@Override
