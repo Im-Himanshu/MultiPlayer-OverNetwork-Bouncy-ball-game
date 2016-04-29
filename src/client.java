@@ -21,7 +21,8 @@ public class client implements Runnable {
   private static boolean closed = false;
   
   public static void main(String[] args) {
-	 
+	 Game g = new Game(2);
+	 game = g;
 
     // The default port.
     int portNumber = 2222;
@@ -43,13 +44,13 @@ public class client implements Runnable {
     try {
       clientSocket = new Socket(host, portNumber);
       // sending info to connect to server.. .
-    	game = Game.gameobject;
-        String output = ""+game.crntplyr;
+        String output = "" +game.crntplyr;
+
+        System.out.println("output in client at 48 is "+output);
         inputLine = new BufferedReader(new InputStreamReader(System.in));
       os = new PrintStream(clientSocket.getOutputStream());
       is = new DataInputStream(clientSocket.getInputStream());
-      os.println(output); 
-    
+      os.println(inputLine.readLine());
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host " + host);
     } catch (IOException e) {
@@ -69,8 +70,14 @@ public class client implements Runnable {
         new Thread(new client()).start();
         while (!closed) {
          // sending game data every 10 milisecond
-        	game = Game.gameobject;
+        	//game = Game.gameobject;
+        //os.println(inputLine.readLine().trim());
+          //String s = inputLine.readLine();    
           String output = game.clientsend();
+
+          System.out.println("output in client at 78 is " + output);
+
+
           os.println(output);
           
         
@@ -99,7 +106,8 @@ public class client implements Runnable {
    * 
    * @see java.lang.Runnable#run()
    */
-  public void run() {
+  @SuppressWarnings("deprecation")
+public void run() {
     /*
      * Keep on reading from the socket till we receive "Bye" from the
      * server. Once we received that then we want to break.

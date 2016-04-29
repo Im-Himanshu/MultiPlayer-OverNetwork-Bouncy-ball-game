@@ -14,9 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class Game extends JPanel implements  MouseListener, MouseMotionListener,ActionListener  {
+public class Game extends JPanel implements  MouseListener, MouseMotionListener,ActionListener,Runnable {
 // all the variables
 	static Game gameobject;
+	static Game gameobjectse;
 	int crntplyr =3;
 	int level = 1;
 	int index = 0; 
@@ -111,36 +112,17 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     // this function  is error creator based on input
     // that is the level if 1 - easy , if 2- medium , if 3 - hard
     // hard means computer will do least errors due to close
-    public Game(int level){
-    	gameobject = this;
-	    JFrame frame = new JFrame("Ping pong Game");
-//        Game game = new Game();
-	    addMouseMotionListener(this);
-		addMouseListener(this);
-		levelsetter(level);// 3-- being the easy
-		frame.add(this);
-        frame.setSize(dimenx+x1+50,dimeny+y1+50);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setSize(dimenx+x1+50,dimeny+y1+50);  
-        while (true) {
-    		isstarted=true;
-    		if(crntplyr == 3){todo();}
-            repaint();
-          
-            //time being dependent on the level the speed of the ball varies
-            
-            try {
-				Thread.sleep(time);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-
     
-    }
+    public Game(int level){
+    	  System.out.println("From The game in constructor 116 th line");		      
+          
+   	
+    	new Thread(this).start();
+    	System.out.println("From The game after constructor 120 th line");		      
+        
+    
+    	gameobject = this;
+    	    }
     public int veldecider(){
     	Random r = new Random();
     	double i = r.nextGaussian()*velcsigma;
@@ -481,13 +463,13 @@ if (score[1]==topscore || score[3]==topscore) endGame();
     	double ko = .09;
     	//System.out.println("omega before collsion is    "+omega);
     	//this omega could be negative
-    	System.out.println("omega before collsion is  ==   "+ omega + " with velbat == " + velbat + "and dia == "+ dia);
+    	//System.out.println("omega before collsion is  ==   "+ omega + " with velbat == " + velbat + "and dia == "+ dia);
     	omega =  omega + (int)((velbat)*ko) ;
     	if(omega>vlimit){omega = vlimit;}
     	if (omega < -vlimit){omega = -vlimit;}
     	//omega =  omega - ((omega*dia-velbat)/dia)*ko ;
-    	System.out.println("omega after collision is    "+omega);
-        System.out.println("ball in crement before collsion is    "+ ballincrx + " and ballincr y is " + ballincry);
+    	//System.out.println("omega after collision is    "+omega);
+       // System.out.println("ball in crement before collsion is    "+ ballincrx + " and ballincr y is " + ballincry);
     	
     	ballincrx = ballincrx + (int)(2*ballincry*omega*k);
     	if(ballincrx > vlimit){ballincrx = vlimit;}
@@ -497,12 +479,12 @@ if (score[1]==topscore || score[3]==topscore) endGame();
     	if (ballincrx> -vlimitl &&ballincrx <0 ){ ballincrx = -vlimitl;}
     	
 
-    	System.out.println("ball in crement after collsion and before sign change    "+ ballincrx);
+    	//System.out.println("ball in crement after collsion and before sign change    "+ ballincrx);
     
     	if (ballincrx <0){ toLeft = !toLeft; 
     	ballincrx = ballincrx*(-1);
     	}
-    	System.out.println("ball in crement after collsion is  and after sign change   "+ ballincrx);
+    	//System.out.println("ball in crement after collsion is  and after sign change   "+ ballincrx);
     }
     private void  speedychanger(int velbat){
     	// tthe below K is just a factor to decide the effect of speed
@@ -515,13 +497,13 @@ if (score[1]==topscore || score[3]==topscore) endGame();
     	
     	//this omega could be negative
 
-    	System.out.println("omega before collsion in y is  ==   "+ omega + "with velbat == " + velbat + "and dia == "+ dia);
+    	//System.out.println("omega before collsion in y is  ==   "+ omega + "with velbat == " + velbat + "and dia == "+ dia);
     	omega =  omega + (int)((velbat/dia)*ko) ;
     	if(omega>vlimit){omega =vlimit;}
     	if (omega < -vlimit){omega = -vlimit;}
 
-    	System.out.println("omega after collision is  in y  "+omega);
-        System.out.println("ball in crement before collsion is  in y   "+ ballincrx + " and ballincr y is " + ballincry);
+    	//System.out.println("omega after collision is  in y  "+omega);
+        //System.out.println("ball in crement before collsion is  in y   "+ ballincrx + " and ballincr y is " + ballincry);
     	
   
     	ballincry = ballincry + (int)(2*ballincrx*omega*k); 
@@ -534,7 +516,7 @@ if (score[1]==topscore || score[3]==topscore) endGame();
     	if (ballincry> -vlimitl &&ballincry <0 ){ ballincry = -vlimitl;}
     	if (ballincry <0){ upwards = !upwards; 
     	ballincry = ballincry*(-1);
-    	System.out.println("ball in crement after collsion is  and after sign change   "+ ballincrx);
+    	//System.out.println("ball in crement after collsion is  and after sign change   "+ ballincrx);
         	
     	}
     }
@@ -833,12 +815,45 @@ if (score[1]==topscore || score[3]==topscore) endGame();
 	
 	
 	 public static void main(String[] args)  {
-//		 Game game = new Game(2);		 
+		 Game game = new Game(2);		 
 		 game.endGame();
 	 }		
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		JFrame frame = new JFrame("Ping pong Game");
+//      Game game = new Game();
+	    addMouseMotionListener(this);
+		addMouseListener(this);
+		levelsetter(level);// 3-- being the easy
+		frame.add(this);
+      frame.setSize(dimenx+x1+50,dimeny+y1+50);
+      frame.setVisible(true);
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.setVisible(true);
+      frame.setSize(dimenx+x1+50,dimeny+y1+50);  
+      while (true) {
+  		isstarted=true;
+  		if(crntplyr == 3){todo();}
+          repaint();
+        
+          //time being dependent on the level the speed of the ball varies
+          
+          try {
+				Thread.sleep(time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+      }
+
+  
+
 		
 	}
 	    	

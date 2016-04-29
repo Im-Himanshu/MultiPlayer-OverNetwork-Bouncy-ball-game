@@ -20,11 +20,13 @@ public class server {
   private static final clientThread[] threads = new clientThread[maxClientsCount];
 
   public static void main(String args[]) {
+	   // new Thread(new Game(2)).start();
 	    Game g2 = new Game(2);
-	    g  = Game.gameobject;
+	    g  = g2;
+	    System.out.println("From The server just after game object");		              
 	  //g.processdata();
     // The default port number.
-    int portNumber = 1235;
+    int portNumber = 3333;
     if (args.length < 1) {
       System.out.println("Usage: java server <portNumber>\n"
           + "Now using port number=" + portNumber);
@@ -47,22 +49,26 @@ public class server {
      */
     while (true) {
       try {
+    	  System.out.println("From The server in 50 th line");		      
         clientSocket = serverSocket.accept();
         int i = 0;
 
-        for (i = 0; i < maxClientsCount; i++) {
-          if (threads[i] == null) {
-            (threads[i] = new clientThread(clientSocket, threads)).start();
-            
-             break;
-          
-          }
-        }
+
         DataInputStream is = new DataInputStream(clientSocket.getInputStream());
         // will connect the client to server or supress the computer player at that spot; 
         String output = is.readLine();
+        System.out.println("the output fot the current player is " +output);
           g.connectclient(output);
-        if (i == maxClientsCount) {
+          for (i = 0; i < maxClientsCount; i++) {
+              if (threads[i] == null) {
+                (threads[i] = new clientThread(clientSocket, threads)).start();
+                
+                 break;
+              
+              }
+            }
+
+          if (i == maxClientsCount) {
           PrintStream os = new PrintStream(clientSocket.getOutputStream());
           os.println("Server too busy. Try later.");
           os.close();
@@ -139,13 +145,16 @@ class clientThread extends Thread {
       }*/
       /* Start the conversation. */
       while (true) {
-    	  Game g = Game.gameobject;        
+    	  Game g = Game.gameobject;     
     	  String line = is.readLine();
+    	  System.out.println("the String send by client is "+ line );
     	  g.serverprocessor(line);
           if (line.startsWith("/quit")) {
           break;
           
           }
+
+    	  System.out.println("From The server in 142 th line");
           boolean t = true;
         /* If the message is private sent it to the given client. */
         if (t) {
