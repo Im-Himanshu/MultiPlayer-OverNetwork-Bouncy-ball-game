@@ -17,8 +17,8 @@ public class server {
   // The client socket.
   private static Socket clientSocket = null;
 
-  // This chat server can accept up to maxClientsCount clients' connections.
-  private static final int maxClientsCount = 1;
+  // server can accept up to maxClientsCount clients' connections.
+  private static final int maxClientsCount = 2;
   private static final clientThread[] threads = new clientThread[maxClientsCount];
 
   public static void main(String args[]) {
@@ -50,14 +50,16 @@ public class server {
    
     
     
-    while (true) {
+    while (true ) {
     	
       try {
         clientSocket = serverSocket.accept();
         int i = 0;
+        System.out.println("kuchh hua 1" );
         for (i = 0; i < maxClientsCount; i++) {
           if (threads[i] == null) {
             (threads[i] = new clientThread(clientSocket, threads)).start();
+            System.out.println("kuchh hua 2" );
             break;
           }
         }
@@ -122,8 +124,10 @@ class clientThread extends Thread {
        */
       is = new DataInputStream(clientSocket.getInputStream());
       os = new PrintStream(clientSocket.getOutputStream());
+      os.println("just to check");
       String name;
       while (true) {
+    	  System.out.println("kuchh to ho raha h" );
         os.println("Enter your name.");
         name = is.readLine().trim();
         if (name.indexOf('@') == -1) {
@@ -138,6 +142,7 @@ class clientThread extends Thread {
       os.println("Welcome " + name
           + " to our chat room.\nTo leave enter /quit in a new line.");
       synchronized (this) {
+    	  System.out.println("kuchh to ho raha h 2" );
         for (int i = 0; i < maxClientsCount; i++) {
           if (threads[i] != null && threads[i] == this) {
             clientName = "@" + name;
@@ -154,6 +159,7 @@ class clientThread extends Thread {
       /* Start the conversation. */
       while (true) {
         String line = is.readLine();
+        System.out.println("kuchh to ho raha h " + line );
         if (line.startsWith("/quit")) {
           break;
         }
@@ -192,6 +198,7 @@ class clientThread extends Thread {
         }
       }
       synchronized (this) {
+    	  System.out.println("kuchh to ho raha h ! check it out" );
         for (int i = 0; i < maxClientsCount; i++) {
           if (threads[i] != null && threads[i] != this
               && threads[i].clientName != null) {
