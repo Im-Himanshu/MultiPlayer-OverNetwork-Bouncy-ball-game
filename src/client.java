@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class client implements Runnable {
+	client c;
+	static Game game;
 
   // The client socket
   private static Socket clientSocket = null;
@@ -19,6 +21,8 @@ public class client implements Runnable {
   private static boolean closed = false;
   
   public static void main(String[] args) {
+	 Game g = new Game(2);
+	 game = g;
 
     // The default port.
     int portNumber = 2222;
@@ -39,14 +43,20 @@ public class client implements Runnable {
      */
     try {
       clientSocket = new Socket(host, portNumber);
-      inputLine = new BufferedReader(new InputStreamReader(System.in));
+      // sending info to connect to server.. .
+        String output = "" +game.crntplyr;
+
+        System.out.println("output in client at 48 is "+output);
+        inputLine = new BufferedReader(new InputStreamReader(System.in));
       os = new PrintStream(clientSocket.getOutputStream());
       is = new DataInputStream(clientSocket.getInputStream());
+      os.println(output);
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host " + host);
     } catch (IOException e) {
       System.err.println("Couldn't get I/O for the connection to the host "
           + host);
+    
     }
 
     /*
@@ -59,7 +69,24 @@ public class client implements Runnable {
         /* Create a thread to read from the server. */
         new Thread(new client()).start();
         while (!closed) {
-          os.println(inputLine.readLine().trim());
+         // sending game data every 10 milisecond
+        	//game = Game.gameobject;
+        //os.println(inputLine.readLine().trim());
+          //String s = inputLine.readLine();    
+          String output = game.clientsend();
+
+          System.out.println("output in client at 78 is " + output);
+
+
+          os.println(output);
+          
+        
+          try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         /*
          * Close the output stream, close the input stream, close the socket.
@@ -67,6 +94,7 @@ public class client implements Runnable {
         os.close();
         is.close();
         clientSocket.close();
+      
       } catch (IOException e) {
         System.err.println("IOException:  " + e);
       }
@@ -78,8 +106,8 @@ public class client implements Runnable {
    * 
    * @see java.lang.Runnable#run()
    */
-  
-  public void run() {
+  @SuppressWarnings("deprecation")
+public void run() {
     /*
      * Keep on reading from the socket till we receive "Bye" from the
      * server. Once we received that then we want to break.
@@ -87,8 +115,11 @@ public class client implements Runnable {
     String responseLine;
     try {
       while ((responseLine = is.readLine()) != null) {
-        System.out.println(responseLine);
-        if (responseLine.indexOf("*** Bye") != -1)
+    	  
+    	  System.out.println(responseLine);
+    	  Game g =Game.gameobject;
+    	  g.clientprocessor(responseLine);
+    	  if (responseLine.indexOf("*** Bye") != -1)
           break;
       }
       closed = true;
