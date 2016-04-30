@@ -19,6 +19,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 	// all the variables
 	static Game gameobject;
 	int crntplyr = 2;
+	int maxscore = 20;
 	int level = 1;
 	int index = 0;
 	int sigma = 1; //
@@ -813,44 +814,44 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
+	
 		// TODO Auto-generated method stub
-		// System.out.println();
-
-		if (crntplyr == 1 || crntplyr == 3) {
-			int y = e.getY();
-			p4[0] = y;
-			// velocity is postion change in 3 frames times
-			vbat[crntplyr] = p4[0] - p4[3];
-			p4[5] = p4[4];
-			p4[4] = p4[3];
-			p4[3] = p4[2];
-			p4[2] = p4[1];
-			p4[1] = p4[0];
-			// System.out.println(vbat4);
-			if ((y - bat[3]) > 0)
-				MoveDown(p4[0]);
-			else
-				MoveUp(p4[0]);
+		//System.out.println();
+	if(score[crntplyr] >= maxscore){
+		vbat[crntplyr] = 0;
+		bat[crntplyr] = -lengthbat;
+		
+	}
+	else{
+		if(crntplyr == 1||crntplyr == 3){
+		int y  = e.getY();
+		p4[0] = y;
+		// velocity is postion change in 3 frames times
+		 vbat[crntplyr] = p4[0]-p4[3];
+		 p4[5] = p4[4];
+		 p4[4] = p4[3];
+		 p4[3] = p4[2];
+		 p4[2] = p4[1];
+		p4[1] = p4[0];
+//		System.out.println(vbat4);
+		if ( (y-bat[3]) > 0 ) MoveDown(p4[0]);
+		else MoveUp(p4[0]);
 		}
-		if (crntplyr == 2 || crntplyr == 4) {
-			int x = e.getX();
+		if(crntplyr == 2||crntplyr == 4){
+			int x  = e.getX();
 			p4[0] = x;
 			// velocity is postion change in 3 frames times
-			vbat[crntplyr] = p4[0] - p4[5];
-			p4[5] = p4[4];
-			p4[4] = p4[3];
-			p4[3] = p4[2];
-			p4[2] = p4[1];
+			 vbat[crntplyr] = p4[0]-p4[5];
+			 p4[5] = p4[4];
+			 p4[4] = p4[3];
+			 p4[3] = p4[2];
+			 p4[2] = p4[1];
 			p4[1] = p4[0];
-			// System.out.println(vbat4);
-			if ((x - bat[3]) > 0)
-				Moveleft(p4[0]);
-			else
-				Moveright(p4[0]);
+//			System.out.println(vbat4);
+			if ( (x-bat[3]) > 0 ) Moveleft(p4[0]);
+			else Moveright(p4[0]);
+		}	}
 		}
-	}
-
 	protected void Moveleft(int x) {
 		if (x > ballxmin)
 			bat[crntplyr] = x;

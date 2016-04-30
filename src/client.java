@@ -28,7 +28,8 @@ public class client implements Runnable {
 				}
 			}
 
-			// Open a socket on a given host and port. Open input and output streams.
+			// Open a socket on a given host and port. Open input and output
+			// streams.
 			try {
 				clientSocket = new Socket(host, port);
 				// sending info to connect to server.. .
@@ -74,7 +75,8 @@ public class client implements Runnable {
 						}
 					}
 
-					// Close the output stream, close the input stream, close the socket.
+					// Close the output stream, close the input stream, close
+					// the socket.
 					os.close();
 					is.close();
 					clientSocket.close();

@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
 
-public class server {
+public class server extends Thread {
 	static Game g;
-
+	static int level;
+	String port[];
 	// The server socket.
 	private static ServerSocket serverSocket = null;
 	// The client socket.
@@ -14,6 +15,15 @@ public class server {
 	// The server can accept up to maxClients clients' connections.
 	private static final int maxClients = 4;
 	private static final clientThread[] threads = new clientThread[maxClients];
+
+	public server(int ll, String[] recieve) {
+		level = ll;
+		port = recieve;
+	}
+
+	public void run() {
+		server.main(port);
+	}
 
 	public static void main(String args[]) {
 		// The default port number.
@@ -112,11 +122,13 @@ class clientThread extends Thread {
 						String output = g.serversend();
 						if (threads[i] != null && threads[i] == this) {
 							threads[i].os.println(output);
-							/*// check if a client is dead 
-							 * if (threads[i].os.checkError()) { System.out
-							 * .println("ERROR writing data to socket " + i);
-							 * g.spotModify(i+1); }
-							 */
+							// check if a client is dead
+							if (threads[i].os.checkError()) {
+								System.out
+										.println("ERROR writing data to socket "
+												+ i);
+								g.spotModify(i + 1);
+							}
 						}
 					}
 				}
