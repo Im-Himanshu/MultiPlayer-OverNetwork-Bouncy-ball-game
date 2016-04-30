@@ -25,7 +25,7 @@ public class client implements Runnable {
 	 game = g;
 
     // The default port.
-    int portNumber = 2222;
+    int portNumber = 3333;
     // The default host.
     String host = "localhost";
 
