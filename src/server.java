@@ -7,8 +7,10 @@ import java.net.ServerSocket;
 /*
  * A chat server that delivers public and private messages.
  */
-public class server {
+public class server extends Thread{
 	static Game g;
+	static int level;
+	String port[];
 
   // The server socket.
   private static ServerSocket serverSocket = null;
@@ -18,7 +20,17 @@ public class server {
   // This chat server can accept up to maxClientsCount clients' connections.
   private static final int maxClientsCount = 4;
   private static final clientThread[] threads = new clientThread[maxClientsCount];
-
+  public server(int ll,String [] recieve){
+	  level = ll;
+	  port = recieve;
+	  
+  }
+  public void run(){
+	  
+	  server.main(port);
+	  
+	  
+  }
   public static void main(String args[]) {
 	   // new Thread(new Game(2)).start();
 	    Game g2 = new Game(2);
@@ -27,11 +39,11 @@ public class server {
 	  //g.processdata();
     // The default port number.
     int portNumber = 3333;
-    if (args.length < 1) {
+    if (args.length == 1) {
       System.out.println("Usage: java server <portNumber>\n"
-          + "Now using port number=" + portNumber);
+          + "Now using port number=" + args[0]);
     } else {
-      portNumber = Integer.valueOf(args[0]).intValue();
+      //portNumber = Integer.valueOf(args[0]).intValue();
     }
     /*
      * Open a server socket on the portNumber (default 2222). Note that we can
@@ -164,6 +176,7 @@ class clientThread extends Thread {
                 for (int i = 0; i < maxClientsCount; i++) {
                 	//<------------------>
                 	String output = g.serversend();
+                	System.out.println(output + " tag this is coming");
                     if (threads[i] != null && threads[i] == this) {
                     threads[i].os.println(output);
                     /*

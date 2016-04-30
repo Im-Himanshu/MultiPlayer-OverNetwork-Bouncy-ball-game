@@ -1,24 +1,21 @@
 package bouncyballgame;
 
-public class demo {
+import java.awt.Container;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
-	public static void main(String... a) {
-		String s = "2,3,4";
-		String ary[] = s.split(",");
-		int number = Integer.valueOf(ary[1]).intValue();
-		System.out.println(number);
-		while (true) {
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.JPanel;
 
-			System.out.println("hello");
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-
+public class demo extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+		public static void main(String... a) throws UnknownHostException {
+			InetAddress IP=InetAddress.getLocalHost();
+			System.out.println("IP of my system is := "+IP.getHostAddress());
 		/*
 		 * int count = 0;
 		 * 

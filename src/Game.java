@@ -1,3 +1,4 @@
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -18,6 +21,8 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
 // all the variables
 	static Game gameobject;
 	static Game gameobjectse;
+	int maxscore = 3;
+
 	int crntplyr =3;
 	int level = 1;
 	int index = 0; 
@@ -98,12 +103,21 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     // how much ball cordinate increase after every frame
     int ballincrx = 2;
     int ballincry = 0;
+	String ip;
     public void init(){
-    	 bat[1] = y1;
+    
+		//System.out.println("IP of my system is := "+IP.getHostAddress());
+	
+
+    	bat[1] = y1;
          bat[2] = x2;
          bat[3] = y3-lengthbat;
          bat[4] = x4-lengthbat; 
-         }
+			//loadSounds();
+
+    
+    }
+    
     // public void init(){  
     	//addMouseMotionListener(this);
 		//addMouseListener(this);
@@ -114,13 +128,23 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     // hard means computer will do least errors due to close
     
     public Game(int level){
+    	InetAddress IP;
+		try {
+			IP = InetAddress.getLocalHost();
+			 ip = IP.getHostAddress();
+		
+			System.out.println("IP of my system is := "+IP.getHostAddress());
+		
+	
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	  System.out.println("From The game in constructor 116 th line");		      
           
    	
     	new Thread(this).start();
-    	System.out.println("From The game after constructor 120 th line");		      
-        
-    
+    	System.out.println("From The game after constructor 120 th line");
     	gameobject = this;
     	    }
     public int veldecider(){
@@ -160,10 +184,10 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     // the below function set the accuracy level for the computer player
     // if the level is hard than bat will fall in the range of lengthbat/2 
   
-    private void moveBall() {
+    /*private void moveBall() {
         ballx = ballxpos(ballx);
         bally = ballypos(bally);
-    }
+    }*/
     // this function is to randomly decide the velocity of the computerbat
     
     
@@ -196,8 +220,8 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
         	else{response += "0,";}
         	if(upwards){response += "1,";}
         	else{response += "0,";}
-        	response =response + ballx+","+bally+","+bat[1]+","+bat[2]+","+bat[3]+","+bat[4]+","+score[1]+","+score[2]+","+score[3]
-        			+","+score[4]+","+omega;
+        	response =response + ballx+","+bally+","+bat[1]+","+bat[2]+","+bat[3]+","+bat[4]+","+score[1]+","+score[2]+","
+        	+score[3]+","+score[4]+","+omega;
         
         	return response;
         }
@@ -249,8 +273,9 @@ public class Game extends JPanel implements  MouseListener, MouseMotionListener,
     			 //bat[i] = from data
     			 //vbat[i] = 
     			 bat[i] =  Integer.valueOf(ary[i+3]).intValue();
-    	  	     score[i] =  Integer.valueOf(ary[i+7]).intValue();
-    	} 
+    		 }
+    		 score[i] =  Integer.valueOf(ary[i+7]).intValue();
+    	     
     		 i++;
     	 } 
     	 /*  toleft,upwards,ballx,bally,omega*/
@@ -594,7 +619,6 @@ if (score[1]==topscore || score[3]==topscore) endGame();
 
     @Override
     public void paint(Graphics g2) {
- 
         super.paint(g2);
         //g = g2;
        // System.out.println("is started in paint is " + isstarted);
@@ -604,55 +628,7 @@ if (score[1]==topscore || score[3]==topscore) endGame();
         // format -- > (outer point of x co-ordinate,outer point of y-co-ordinate,radius x, radius y)
         
         //dia is atgually dia here so dia/2 = diaactual
-        if(!isstarted) {
-	         g2d.drawString("Choose level ",70,70);
-	         g2d.drawString("Easy :- " ,70,100);
-	         g2d.drawString("Medium :-" ,70,125);
-	         g2d.drawString("Hard :- " ,70,150);
-	         g2d.fillRect(190,80, 100,20);
-	         g2d.fillRect(190,105, 100,20);
-	         g2d.fillRect(190,135, 100,20);
-	         g2d.fillRect(140, 165, 100, 20);
-   	     g2.setFont(new Font("Arial", Font.PLAIN, 15));				
-	         g2d.setColor(Color.WHITE);       
-	         g2d.drawString("Click here", 195, 95);
-	         g2d.drawString("Click here", 195, 120);
-	         g2d.drawString("Click here", 195, 150);
-	         g2d.drawString("Procedd", 145, 180);
-	         g2d.setColor(Color.GREEN);       
-	         
-	         
-	        	 if(level == 1){ 
-	        		 g2d.fillOval(300, 85, 12, 12);
-	        		 g2d.fillRect(190,80, 100,20);
-	        		 
-	        	 }
-
-	        	 if(level == 2){
-
-	        		 g2d.fillOval(300,110 , 12, 12);
-	        		 g2d.fillRect(190,105, 100,20);
-
-	    	         
-	    	         
-
-	        		 
-	        		 
-	        	 }
-
-	        	 if(level == 3){
-	        		 g2d.fillOval(300, 140, 12, 12);
-	        		 g2d.fillRect(190,135, 100,20);
-	        		 
-
-	        	 }
-	        	 
-	        	 
-	         }	
-        	
-        	
-        
-        else{
+	
         g2d.fillOval(ballx, bally, dia, dia);
         int i1 = ballx+dia/2;
         int j1 = bally+dia/2;
@@ -675,7 +651,17 @@ if (score[1]==topscore || score[3]==topscore) endGame();
         g2d.fillRect(x3-widthbat,bat[3],widthbat,lengthbat); // paint the player3's bat
         g2d.setColor(Color.GRAY);
         g2d.drawString("PLAYER4 :- "+ score[4] ,290, 30);
+       
         g2d.fillRect(bat[4],y4,lengthbat,widthbat); // paint the player4's bat
+        g2d.setColor(Color.BLACK);
+        
+        if(crntplyr == 3 ){
+            
+        	g2d.drawString("server ip is "+ ip ,375, 30);
+            	
+        	
+        }
+   
         g2d.setColor(Color.BLACK);
         int vel = (int)Math.pow(Math.pow(ballincrx, 2)+ Math.pow(ballincry, 2),.5);
         g2d.drawString("Ball velocity :- " + vel+"pixel/frame" , 100, 60);
@@ -687,7 +673,7 @@ if (score[1]==topscore || score[3]==topscore) endGame();
         g2d.drawLine((x1+x3)/2, y1,(x1+x3)/2, y2);
         g2d.drawLine(x1, (y1+y2)/2,x3,(y1+y2)/2 );
         }
-    }
+   
 
       public void endGame(){
     	
@@ -701,7 +687,12 @@ if (score[1]==topscore || score[3]==topscore) endGame();
 	
 		// TODO Auto-generated method stub
 		//System.out.println();
-	
+	if(score[crntplyr] >= maxscore){
+		vbat[crntplyr] = 0;
+		bat[crntplyr] = -lengthbat;
+		
+	}
+	else{
 		if(crntplyr == 1||crntplyr == 3){
 		int y  = e.getY();
 		p4[0] = y;
@@ -729,7 +720,7 @@ if (score[1]==topscore || score[3]==topscore) endGame();
 //			System.out.println(vbat4);
 			if ( (x-bat[3]) > 0 ) Moveleft(p4[0]);
 			else Moveright(p4[0]);
-			}
+		}	}
 		}
 	protected void Moveleft(int x){		
 		if ( x > ballxmin) bat[crntplyr] = x;
