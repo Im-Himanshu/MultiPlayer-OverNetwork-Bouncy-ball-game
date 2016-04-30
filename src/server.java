@@ -16,8 +16,6 @@ public class server {
 	private static final clientThread[] threads = new clientThread[maxClients];
 
 	public static void main(String args[]) {
-		Game g2 = new Game(2);
-		g = g2;
 		// The default port number.
 		int port = 1234;
 		if (args.length > 0) {
@@ -26,13 +24,15 @@ public class server {
 				port = 1234;
 			}
 		}
-		// Open a server socket on the port (default 3333).
+		// Open a server socket on the port (default 1234).
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.out.println(e);
 		}
-
+		Game g2 = new Game(2);
+		g = g2;
+		g.playersetter(3);
 		// Create a client socket for each connection and pass it to a new
 		// client thread.
 		while (true) {
@@ -40,10 +40,15 @@ public class server {
 				clientSocket = serverSocket.accept();
 				DataInputStream is = new DataInputStream(
 						clientSocket.getInputStream());
+				PrintStream os = new PrintStream(
+						clientSocket.getOutputStream());
 				// will connect the client to server or supress the computer
 				// player at that spot;
+				int spot = g.availableSpot();
+				System.out.print(spot);
+				os.println(spot);
 				String output = is.readLine();
-				g.connectclient(output);
+				//g.connectclient(output);
 				int i = 0;
 				for (i = 0; i < maxClients; i++) {
 					if (threads[i] == null) {
@@ -53,7 +58,7 @@ public class server {
 					}
 				}
 				if (i == maxClients) {
-					PrintStream os = new PrintStream(
+					os = new PrintStream(
 							clientSocket.getOutputStream());
 					os.println("maximum number of players reached. Start a new game");
 					os.close();
@@ -94,9 +99,10 @@ class clientThread extends Thread {
 			// Create input and output streams for this client.
 			is = new DataInputStream(clientSocket.getInputStream());
 			os = new PrintStream(clientSocket.getOutputStream());
-
+			Game g = Game.gameobject;
+			
 			while (true) {
-				Game g = Game.gameobject;
+				
 				String line = is.readLine();
 				g.serverprocessor(line);
 				if (line.startsWith("/quit")) {

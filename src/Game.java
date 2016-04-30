@@ -18,7 +18,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 		ActionListener, Runnable {
 	// all the variables
 	static Game gameobject;
-	static Game gameobjectse;
 	int crntplyr = 2;
 	int level = 1;
 	int index = 0;
@@ -134,6 +133,21 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 		double i = r.nextGaussian() * velcsigma;
 		return (int) i;
 	}
+	public void playersetter(int player){
+		crntplyr = player;
+		openspot[player] = 1;
+	}
+	public int availableSpot(){
+		int spot = 0;
+		for(int i = 1;i<5;i++){
+			if(openspot[i] == 0){
+				spot = i;
+				openspot[i] = 1;
+				break;
+			}
+		}
+		return spot;
+	}
 
 	public void levelsetter(int i) {
 		// hard for player and good for computer
@@ -193,7 +207,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 		if (crntplyr == 3) {
 			repeller();
 		}// repel the ball and set all the omega and vel data
-		// senddata();
+			// senddata();
 	}
 
 	// call this function from client to send data
@@ -247,16 +261,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 	}
 
 	public void clientprocessor(String s) {
-		// toleft (0,1)0 == false
-		// upwards(0,1)
-		// ballx
-		// bally
-		// vbat[]
-		// omega
-		// bat[]
-		// score[]
-		// toleft,upwards,ballx,bally,bat[1],bat[2],bat[3],bat[4],
-		// socre[1],socre[2],socre[3],socre[4],omega
+		
 		String ary[] = s.split(",");
 		int number = Integer.valueOf(ary[0]).intValue();
 		if (number == 0) {
@@ -264,14 +269,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 		} else {
 			toLeft = true;
 		}
-
 		number = Integer.valueOf(ary[1]).intValue();
 		if (number == 0) {
 			toLeft = false;
 		} else {
 			toLeft = true;
 		}
-
 		ballx = Integer.valueOf(ary[2]).intValue();
 		bally = Integer.valueOf(ary[3]).intValue();
 		omega = Integer.valueOf(ary[12]).intValue();
@@ -285,6 +288,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 				score[i] = Integer.valueOf(ary[i + 7]).intValue();
 			}
 			i++;
+			score[crntplyr] = Integer.valueOf(ary[crntplyr + 7]).intValue(); 
 		}
 		/* toleft,upwards,ballx,bally,omega */
 	}
@@ -950,7 +954,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		JFrame frame = new JFrame("Ping pong Game");
 		// Game game = new Game();
 		addMouseMotionListener(this);

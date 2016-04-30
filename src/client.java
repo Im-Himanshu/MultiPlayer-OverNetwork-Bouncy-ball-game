@@ -16,9 +16,6 @@ public class client implements Runnable {
 	private static boolean closed = false;
 
 	public static void main(String[] args) {
-		Game g = new Game(2);
-		game = g;
-
 		int port = 1234; // The default port.
 		String host = "localhost"; // The default host.
 		if (args.length > 1) {
@@ -35,12 +32,17 @@ public class client implements Runnable {
 			try {
 				clientSocket = new Socket(host, port);
 				// sending info to connect to server.. .
-				String output = "" + game.crntplyr;
-
 				inputLine = new BufferedReader(new InputStreamReader(System.in));
 				os = new PrintStream(clientSocket.getOutputStream());
 				is = new DataInputStream(clientSocket.getInputStream());
+				int spot = Integer.parseInt(is.readLine());
+				System.out.print(spot);
+				Game g = new Game(2);
+				game = g;
+				game.playersetter(spot);
+				String output = "" + game.crntplyr;
 				os.println(output);
+				System.out.print(output);
 			} catch (UnknownHostException e) {
 				System.err.println("Don't know about host " + host);
 			} catch (IOException e) {
