@@ -40,15 +40,14 @@ public class server {
 				clientSocket = serverSocket.accept();
 				DataInputStream is = new DataInputStream(
 						clientSocket.getInputStream());
-				PrintStream os = new PrintStream(
-						clientSocket.getOutputStream());
+				PrintStream os = new PrintStream(clientSocket.getOutputStream());
 				// will connect the client to server or supress the computer
 				// player at that spot;
 				int spot = g.availableSpot();
 				System.out.print(spot);
 				os.println(spot);
 				String output = is.readLine();
-				//g.connectclient(output);
+				// g.connectclient(output);
 				int i = 0;
 				for (i = 0; i < maxClients; i++) {
 					if (threads[i] == null) {
@@ -58,8 +57,7 @@ public class server {
 					}
 				}
 				if (i == maxClients) {
-					os = new PrintStream(
-							clientSocket.getOutputStream());
+					os = new PrintStream(clientSocket.getOutputStream());
 					os.println("maximum number of players reached. Start a new game");
 					os.close();
 					clientSocket.close();
@@ -72,9 +70,9 @@ public class server {
 }
 
 /*
-	This client thread opens the input and the output streams for a particular
-	client. starts the server players game, receives the data from all the clients ,
-	process the data and send the precesed info to all the clients. 
+ * This client thread opens the input and the output streams for a particular
+ * client. starts the server players game, receives the data from all the
+ * clients , process the data and send the precesed info to all the clients.
  */
 class clientThread extends Thread {
 
@@ -100,9 +98,9 @@ class clientThread extends Thread {
 			is = new DataInputStream(clientSocket.getInputStream());
 			os = new PrintStream(clientSocket.getOutputStream());
 			Game g = Game.gameobject;
-			
+
 			while (true) {
-				
+
 				String line = is.readLine();
 				g.serverprocessor(line);
 				if (line.startsWith("/quit")) {
@@ -114,6 +112,11 @@ class clientThread extends Thread {
 						String output = g.serversend();
 						if (threads[i] != null && threads[i] == this) {
 							threads[i].os.println(output);
+							/*// check if a client is dead 
+							 * if (threads[i].os.checkError()) { System.out
+							 * .println("ERROR writing data to socket " + i);
+							 * g.spotModify(i+1); }
+							 */
 						}
 					}
 				}
@@ -129,7 +132,8 @@ class clientThread extends Thread {
 					}
 				}
 			}
-			// Close the output stream, close the input stream, close the socket.
+			// Close the output stream, close the input stream, close the
+			// socket.
 			is.close();
 			os.close();
 			clientSocket.close();

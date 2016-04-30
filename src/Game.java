@@ -137,6 +137,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener,
 		crntplyr = player;
 		openspot[player] = 1;
 	}
+	public void spotModify(int spot){
+		openspot[spot] = 0;
+	}
 	public int availableSpot(){
 		int spot = 0;
 		for(int i = 1;i<5;i++){
