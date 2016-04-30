@@ -1,3 +1,5 @@
+
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -118,10 +120,10 @@ public void mouseClicked(MouseEvent e) {
 	 level = 3;
 		repaint();
 }if(e.getY() < 185 && e.getY() > 165) {		
-	String[] send = new String[1];
-	send[0] = "1234";
-	//new server(level).start();
+
+	Game game = new Game(level);
 	
+      
 }
 
 	
